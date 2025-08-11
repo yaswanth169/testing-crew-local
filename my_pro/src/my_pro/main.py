@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 import sys
 import warnings
-
 from datetime import datetime
+from pathlib import Path
 
 from my_pro.crew import MyPro
 
@@ -23,8 +23,30 @@ def run():
     }
     
     try:
-        MyPro().crew().kickoff(inputs=inputs)
+        print(f"🚀 Starting crew with topic: {inputs['topic']}")
+        print(f"📅 Current year: {inputs['current_year']}")
+        print("=" * 50)
+        
+        # Run the crew
+        crew_instance = MyPro().crew()
+        result = crew_instance.kickoff(inputs=inputs)
+        
+        # Save the result to a file
+        output_file = Path("report.md")
+        with open(output_file, "w", encoding="utf-8") as f:
+            f.write(f"# Crew AI Report - {inputs['topic']}\n")
+            f.write(f"Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+            f.write(f"Topic: {inputs['topic']}\n")
+            f.write(f"Year: {inputs['current_year']}\n\n")
+            f.write("## Results\n\n")
+            f.write(str(result))
+        
+        print(f"\n✅ Crew completed successfully!")
+        print(f"📄 Report saved to: {output_file.absolute()}")
+        print(f"📊 Result: {result}")
+        
     except Exception as e:
+        print(f"❌ Error running crew: {e}")
         raise Exception(f"An error occurred while running the crew: {e}")
 
 
@@ -66,3 +88,6 @@ def test():
 
     except Exception as e:
         raise Exception(f"An error occurred while testing the crew: {e}")
+
+if __name__ == "__main__":
+    run()
